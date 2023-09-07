@@ -1,41 +1,30 @@
-const loadTube = async(catagory)=>{
-    const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${catagory}`);
+const loadTube = async(category) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${category}`);
     const data = await res.json();
-    const tubes = data.data;
-    // console.log(data.data);
+    let tubes = data.data;
+
+    // Sort tubes based on views
+    tubes.sort((a, b) => parseFloat(b?.others?.views) - parseFloat(a?.others?.views)); 
+
     displayTube(tubes);
-    
 }
 loadTube(1000);
 
-const displayTube = tubes =>{
-    // console.log(tubes);
-
-    
+const displayTube = tubes => {
     const tubeContainer = document.getElementById('tube-container');
-    // clear contianer
-    tubeContainer.textContent ='';
-    
+    tubeContainer.textContent = '';
     
     const icon = document.getElementById('no-data-found');
-    // drawing section
-    if(tubes.length<1){
-        icon.classList.remove('hidden')
-    }
-    else{
+    if(tubes.length < 1) {
+        icon.classList.remove('hidden');
+    } else {
         icon.classList.add('hidden');
     }
 
-
-      
-       
     tubes.forEach(tube => {
-        // console.log(tube);
-        // creat div--2
         const tubeCard = document.createElement('div');
         tubeCard.classList = `card mt-2`;
-     
-        // set innet html--3
+
         tubeCard.innerHTML = `
         <div class="relative">
             <figure class="relative"><img class="w-64 h-44" src="${tube?.thumbnail}" /></figure>
@@ -54,11 +43,10 @@ const displayTube = tubes =>{
         </div>
         `;
 
-        // append child--4
-        tubeContainer.appendChild(tubeCard);
-        sortBy(tube);    
+        tubeContainer.appendChild(tubeCard);    
     });
 }
+
      // // time
      const convertSeconds = (seconds) =>    {
         const hours = Math.trunc( seconds/ 3600);
